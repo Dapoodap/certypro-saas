@@ -4,21 +4,23 @@ import type React from "react"
 
 import { useState } from "react"
 import Link from "next/link"
-import { Award, Eye, EyeOff } from "lucide-react"
+import { Award, Eye, EyeOff, LoaderCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation"
+import { toast } from "@/hooks/use-toast"
 export default function LoginPage() {
+  const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const router = useRouter();
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault()
-  
+  setLoading(true)
   try {
     const res = await signIn("credentials", {
       email,
@@ -29,16 +31,39 @@ const handleSubmit = async (e: React.FormEvent) => {
     console.log("SignIn response:", res); // Debug log
 
     if (res?.error) {
-      // Handle login error
-      console.error("Login failed:", res.error);
+      setLoading(false)
+      // Handle 
+      //  error
+      toast({
+            title: "Gagal",
+            description: res.error,
+            duration: 3000,
+            variant: "destructive", // atau "destructive" untuk error
+          })  
       // Bisa tambahkan state untuk menampilkan error ke user
       // setError(res.error);
     } else if (res?.ok) {
+      toast({
+            title: "Sukses",
+            description: 
+            "Login Berhasil",
+            duration: 3000,
+            variant: "success", // atau "destructive" untuk error
+          })  
       // Login berhasil
       console.log("Login successful");
       router.push("/dashboard");
+            setLoading(false)
+
     }
   } catch (error) {
+    toast({
+            title: "Gagal",
+            description: "something went wrong",
+            duration: 3000,
+            variant: "destructive", // atau "destructive" untuk error
+          })
+    setLoading(false)
     console.error("Unexpected error:", error);
   }
 }
@@ -110,7 +135,8 @@ const handleSubmit = async (e: React.FormEvent) => {
                 type="submit"
                 className="w-full h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium"
               >
-                Sign In
+                {loading ?                 <LoaderCircle className="animate-spin"/>
+ : "Sign In"}
               </Button>
             </form>
             <div className="mt-6 text-center">

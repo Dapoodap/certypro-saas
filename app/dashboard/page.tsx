@@ -415,9 +415,8 @@ toast({
                     <>Loading ...</>
                   ) : (
                     <CardContent className="space-y-4">
-                  {!certificatesLoading &&
-                    !certificatesError &&
-                    certificates?.map((activity, index) => (
+                  {certificates && !certificatesLoading && !certificatesError && certificates.length > 0 ? (
+                      certificates?.map((activity, index) => (
                       <div
                         key={index}
                         className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
@@ -441,7 +440,16 @@ toast({
                           </Button>
                         </div>
                       </div>
-                    ))}
+                    ))
+                    ): (
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            No recent activity
+                          </p>
+                        </div>
+                      </div>
+                    )}
                 </CardContent>
                   )
                 }
